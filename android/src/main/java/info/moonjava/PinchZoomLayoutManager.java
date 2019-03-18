@@ -14,6 +14,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import info.moonjava.events.RNScaleChangeEvent;
+
 class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
     private static final String REACT_CLASS = "RNPinchZoomLayout";
     public static final String LOG_TAG = "RNPinchZoomLayout";
@@ -37,6 +39,21 @@ class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
         pinchZoomLayout.setZoomEnabled(zoomEnabled);
     }
 
+    @ReactProp(name = "panEnabled", defaultBoolean = true)
+    public void setPanEnabled(PinchZoomLayout pinchZoomLayout, boolean panEnabled) {
+        pinchZoomLayout.setPanEnabled(panEnabled);
+    }
+
+    @ReactProp(name = "verticalPanEnabled", defaultBoolean = true)
+    public void setVerticalPanEnabled(PinchZoomLayout pinchZoomLayout, boolean verticalPanEnabled) {
+        pinchZoomLayout.setVerticalPanEnabled(verticalPanEnabled);
+    }
+
+    @ReactProp(name = "horizontalPanEnabled", defaultBoolean = true)
+    public void setHorizontalPanEnabled(PinchZoomLayout pinchZoomLayout, boolean horizontalPanEnabled) {
+        pinchZoomLayout.setHorizontalPanEnabled(horizontalPanEnabled);
+    }
+
     @ReactProp(name = "minimumZoomScale", defaultFloat = 1.0f)
     public void setMinimumZoomScale(PinchZoomLayout pinchZoomLayout, float minimumZoomScale) {
         pinchZoomLayout.setMinZoom(minimumZoomScale);
@@ -47,11 +64,16 @@ class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
         view.setMaxZoom(maximumZoomScale);
     }
 
+    @ReactProp(name = "useAnimatedEvents", defaultBoolean = false)
+    public void setUseAnimatedEvents(PinchZoomLayout view, boolean useAnimatedEvents) {
+
+    }
+
     @Override
     public @Nullable
     Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(
-                "zoomLayoutScale", MapBuilder.of("registrationName", "onZoomLayoutScale")
+                RNScaleChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onZoomScale")
         );
     }
 
@@ -67,5 +89,35 @@ class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
 
     @Override
     public void addViews(PinchZoomLayout parent, List<View> views) {
+        if (views != null) {
+            for (View child : views) {
+                parent.addChild(child);
+            }
+        }
+    }
+
+    @Override
+    public View getChildAt(PinchZoomLayout parent, int index) {
+        return parent.getContentChildAt(index);
+    }
+
+    @Override
+    public int getChildCount(PinchZoomLayout parent) {
+        return parent.getContentChildCount();
+    }
+
+    @Override
+    public void removeView(PinchZoomLayout parent, View view) {
+        parent.removeContentView(view);
+    }
+
+    @Override
+    public void removeViewAt(PinchZoomLayout parent, int index) {
+        parent.removeContentViewAt(index);
+    }
+
+    @Override
+    public void removeAllViews(PinchZoomLayout parent) {
+        parent.removeAllContentViews();
     }
 }

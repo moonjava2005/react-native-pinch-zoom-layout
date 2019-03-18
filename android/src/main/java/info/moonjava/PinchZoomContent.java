@@ -2,7 +2,6 @@ package info.moonjava;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -46,10 +45,5 @@ class PinchZoomContent extends FrameLayout {
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "On Layout: " + (right - left) + "x" + (bottom - top));
     }
 }

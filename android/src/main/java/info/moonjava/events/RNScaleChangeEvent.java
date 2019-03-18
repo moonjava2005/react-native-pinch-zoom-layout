@@ -7,11 +7,19 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class RNScaleChangeEvent extends Event {
     public static final String EVENT_NAME = "onTopRNScaleChange";
-    private double scale;
+    private double zoomScale;
+    private double containerWidth;
+    private double containerHeight;
+    private double contentWidth;
+    private double contentHeight;
 
-    public RNScaleChangeEvent(int viewTag, double scale) {
+    public RNScaleChangeEvent(int viewTag, double zoomScale, double containerWidth, double containerHeight, double contentWidth, double contentHeight) {
         super(viewTag);
-        this.scale = scale;
+        this.zoomScale = zoomScale;
+        this.containerWidth = containerWidth;
+        this.containerHeight = containerHeight;
+        this.contentWidth = contentWidth;
+        this.contentHeight = contentHeight;
     }
 
     @Override
@@ -26,8 +34,12 @@ public class RNScaleChangeEvent extends Event {
 
     private WritableMap serializeEventData() {
         WritableMap eventData = Arguments.createMap();
-        eventData.putDouble("scale", this.scale);
         eventData.putInt("target", this.getViewTag());
+        eventData.putDouble("zoomScale", this.zoomScale);
+        eventData.putDouble("containerWidth", this.containerWidth);
+        eventData.putDouble("containerHeight", this.containerHeight);
+        eventData.putDouble("contentWidth", this.contentWidth);
+        eventData.putDouble("contentHeight", this.contentHeight);
         return eventData;
     }
 }

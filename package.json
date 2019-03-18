@@ -24,11 +24,13 @@
     "pinch-to-zoom-pan"
   ],
   "homepage": "https://github.com/moonjava2005/react-native-pinch-zoom-layout",
+  "readme": "https://github.com/moonjava2005/react-native-pinch-zoom-layout#readme",
   "repository": {
     "type": "git",
     "url": "git://github.com/moonjava2005/react-native-pinch-zoom-layout.git"
   },
   "peerDependencies": {
-    "react-native": ">=0.50.0"
+    "react-native": ">=0.50.0",
+    "react-native-gesture-handler": "^1.1.0"
   }
 }
