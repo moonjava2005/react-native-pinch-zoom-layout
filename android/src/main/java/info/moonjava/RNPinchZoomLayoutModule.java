@@ -8,7 +8,7 @@ import com.facebook.react.bridge.Callback;
 
 public class RNPinchZoomLayoutModule extends ReactContextBaseJavaModule {
 
-    private static final String CLASS_NAME = "RNPinchZoomLayout";
+    private static final String CLASS_NAME = "RNPinchZoomLayoutModule";
     private final ReactApplicationContext reactContext;
 
     public RNPinchZoomLayoutModule(ReactApplicationContext reactContext) {

@@ -1,53 +1,44 @@
 
-# react-native-react-native-pinch-zoom-layout
+# react-native-pinch-zoom-layout
 
 ## Getting started
 
-`$ npm install react-native-react-native-pinch-zoom-layout --save`
+`$ npm install react-native-pinch-zoom-layout --save`
+#####Or
+`$ yarn add react-native-pinch-zoom-layout`
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-react-native-pinch-zoom-layout`
+`$ react-native link react-native-pinch-zoom-layout`
 
 ### Manual installation
 
 
 #### iOS
 
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-react-native-pinch-zoom-layout` and add `RNReactNativePinchZoomLayout.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNReactNativePinchZoomLayout.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
+No action required
 
 #### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-  - Add `import info.moonjava.RNReactNativePinchZoomLayoutPackage;` to the imports at the top of the file
-  - Add `new RNReactNativePinchZoomLayoutPackage()` to the list returned by the `getPackages()` method
+  - Add `import info.moonjava.RNPinchZoomLayoutPackage;` to the imports at the top of the file
+  - Add `new RNPinchZoomLayoutPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-react-native-pinch-zoom-layout'
-  	project(':react-native-react-native-pinch-zoom-layout').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-react-native-pinch-zoom-layout/android')
+  	include ':react-native-pinch-zoom-layout'
+  	project(':react-native-pinch-zoom-layout').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-pinch-zoom-layout/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-react-native-pinch-zoom-layout')
+      implementation project(':react-native-pinch-zoom-layout')
   	```
-
-#### Windows
-[Read it! :D](https://github.com/ReactWindows/react-native)
-
-1. In Visual Studio add the `RNReactNativePinchZoomLayout.sln` in `node_modules/react-native-react-native-pinch-zoom-layout/windows/RNReactNativePinchZoomLayout.sln` folder to their solution, reference from their app.
-2. Open up your `MainPage.cs` app
-  - Add `using React.Native.Pinch.Zoom.Layout.RNReactNativePinchZoomLayout;` to the usings at the top of the file
-  - Add `new RNReactNativePinchZoomLayoutPackage()` to the `List<IReactPackage>` returned by the `Packages` method
 
 
 ## Usage
 ```javascript
-import RNReactNativePinchZoomLayout from 'react-native-react-native-pinch-zoom-layout';
+import PinchZoomLayout from 'react-native-pinch-zoom-layout';
 
 // TODO: What to do with the module?
-RNReactNativePinchZoomLayout;
+PinchZoomLayout;
 ```
   

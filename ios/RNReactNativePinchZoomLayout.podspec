@@ -1,18 +1,18 @@
 
 Pod::Spec.new do |s|
-  s.name         = "RNReactNativePinchZoomLayout"
+  s.name         = "RNPinchZoomLayout"
   s.version      = "1.0.0"
-  s.summary      = "RNReactNativePinchZoomLayout"
+  s.summary      = "RNPinchZoomLayout"
   s.description  = <<-DESC
-                  RNReactNativePinchZoomLayout
+                  RNPinchZoomLayout
                    DESC
   s.homepage     = ""
   s.license      = "MIT"
   # s.license      = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.author             = { "author" => "author@domain.cn" }
+  s.author             = { "author" => "moonjava@gmail.com" }
   s.platform     = :ios, "7.0"
-  s.source       = { :git => "https://github.com/author/RNReactNativePinchZoomLayout.git", :tag => "master" }
-  s.source_files  = "RNReactNativePinchZoomLayout/**/*.{h,m}"
+  s.source       = { :git => "https://github.com/moonjava2005/react-native-pinch-zoom-layout.git", :tag => "master" }
+  s.source_files  = "RNPinchZoomLayout/**/*.{h,m}"
   s.requires_arc = true
 
 

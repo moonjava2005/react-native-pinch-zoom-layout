@@ -1,20 +1,34 @@
-
 {
-  "name": "react-native-react-native-pinch-zoom-layout",
+  "name": "react-native-pinch-zoom-layout",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pinch to zoom and pan content view",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "author": {
+    "name": "MoonJava",
+    "email": "moonjava@gmail.com"
+  },
+  "license": "MIT",
   "keywords": [
-    "react-native"
+    "react-native",
+    "react-component",
+    "ios",
+    "android",
+    "pinch",
+    "pinch",
+    "zoom",
+    "pan",
+    "pinch-to-zoom",
+    "pinch-to-zoom-pan"
   ],
-  "author": "",
-  "license": "",
+  "homepage": "https://github.com/moonjava2005/react-native-pinch-zoom-layout",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/moonjava2005/react-native-pinch-zoom-layout.git"
+  },
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
-
+    "react-native": ">=0.50.0"
   }
 }
