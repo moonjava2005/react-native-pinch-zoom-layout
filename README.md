@@ -4,7 +4,9 @@
 ## Getting started
 
 `$ npm install react-native-pinch-zoom-layout --save`
+
 Or
+
 `$ yarn add react-native-pinch-zoom-layout`
 
 ### Mostly automatic installation
