@@ -133,7 +133,6 @@ class PinchZoomLayout extends FrameLayout implements CustomPinchZoomLayout.OnCus
     }
 
     void removeAllContentViews() {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "removeAllContentViews");
         if (zoomLayoutContent != null) {
             zoomLayoutContent.removeAllViews();
         }
@@ -196,7 +195,6 @@ class PinchZoomLayout extends FrameLayout implements CustomPinchZoomLayout.OnCus
 
     @Override
     public void onZoom(float zoom, float containerWidth, float containerHeight, float contentWidth, float contentHeight) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "On Zoom: " + zoom + " containerWidth: " + containerWidth + " containerHeight: " + containerHeight + " contentWidth: " + contentWidth + " contentHeight: " + contentHeight);
         eventDispatcher.dispatchEvent(new RNScaleChangeEvent(getId(), zoom, containerWidth, containerHeight, contentWidth, contentHeight));
     }
 }
