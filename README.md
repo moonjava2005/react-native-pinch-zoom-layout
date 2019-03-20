@@ -35,12 +35,73 @@ No action required
       implementation project(':react-native-pinch-zoom-layout')
   	```
 
+## Dependencies
+`react-native-pinch-zoom-layout` uses [react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler)! Link it before using
 
 ## Usage
 ```javascript
+import React,{Component} from 'react';
 import PinchZoomLayout from 'react-native-pinch-zoom-layout';
+import {
+    Image
+} from 'react-native';
 
-// TODO: What to do with the module?
-PinchZoomLayout;
+export default class ImageViewer extends Component {
+    render() {
+       return(<PinchZoomLayout
+                          style={Device.isIos ? FULL_FLEX : FULL_FLEX_CENTER_ALL}
+                          onZoom={this.onZoom}
+                      >
+                          <Image
+                                style={{width:56,height:56}}
+                                source={{
+                                  uri:'https://facebook.github.io/react-native/img/header_logo.png'
+                              }}
+                          />
+                      </PinchZoomLayout>)
+    }
+    onZoom=event=>{
+        const {
+            containerWidth,
+            containerHeight,
+            contentWidth,
+            contentHeight,
+            zoomScale
+        }=event;
+    }
+}
 ```
-  
+
+### Configurable props
+* [enabled](#enabled)
+* [panEnabled](#panEnabled)
+* [minimumZoomScale](#minimumZoomScale)
+* [maximumZoomScale](#maximumZoomScale)
+
+### Event props
+* [onZoom](#onZoom)
+* [onTap](#onTap)
+
+### Methods
+* [zoom](#zoom)
+
+
+### Configurable props
+
+#### enabled
+Indicates whether the layout allows zoom.
+* **true (default)** - allow zoom
+* **false** -  Disable zoom
+
+#### panEnabled
+Indicates whether the layout can pan when the zoomed content is bigger than the container.
+* **true (default)** - Allow pan
+* **false** - Disable pan
+
+#### minimumZoomScale
+The minimum zoom level.
+* **default** - 1
+
+#### maximumZoomScale
+The maximum zoom level.
+* **default** - 3
