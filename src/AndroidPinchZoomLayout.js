@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import {Animated, NativeModules, requireNativeComponent} from 'react-native';
+import {Animated, findNodeHandle, NativeModules, requireNativeComponent, UIManager} from 'react-native';
 
 const {
     RNPinchZoomLayoutModule
@@ -9,6 +9,7 @@ const {
 const RNPinchZoomLayout = requireNativeComponent('RNPinchZoomLayout', null);
 
 class PurePinchZoomLayout extends PureComponent {
+
 
     render() {
         const {
@@ -25,12 +26,13 @@ class PurePinchZoomLayout extends PureComponent {
                 enable={enable}
                 verticalPanEnabled={verticalPanEnabled}
                 horizontalPanEnabled={horizontalPanEnabled}
+                useScaleAnimatedEvents={!!onZoomScale}
                 onZoomScale={onZoomScale}
-            >
-                {children}
-            </RNPinchZoomLayout>
+                children={children}
+            />
         );
     }
+
 }
 
 const AnimatedWrappedPinchZoomLayout = Animated.createAnimatedComponent(PurePinchZoomLayout);
@@ -60,7 +62,8 @@ export default class AndroidPinchZoomLayout extends PureComponent {
         super(props);
         const {
             animatedNativeDriver,
-            animatedScale
+            animatedScale,
+            onZoomScale
         } = props;
         if (animatedScale) {
             this._zoomScaleEvent = Animated.event(
@@ -69,7 +72,10 @@ export default class AndroidPinchZoomLayout extends PureComponent {
                         zoomScale: animatedScale,
                     }
                 }],
-                {useNativeDriver: animatedNativeDriver}
+                {
+                    useNativeDriver: animatedNativeDriver,
+                    listener: onZoomScale,
+                }
             );
         }
     }
@@ -79,6 +85,8 @@ export default class AndroidPinchZoomLayout extends PureComponent {
             style,
             children,
             enable,
+            minimumZoomScale,
+            maximumZoomScale,
             verticalPanEnabled,
             horizontalPanEnabled,
             onZoomScale
@@ -89,13 +97,22 @@ export default class AndroidPinchZoomLayout extends PureComponent {
             <RenderComponent
                 style={style}
                 enable={enable}
-                onZoomScale={useAnimatedEvents ? this._zoomScaleEvent : onZoomScale}
-                useAnimatedEvents={useAnimatedEvents}
+                minimumZoomScale={minimumZoomScale}
+                maximumZoomScale={maximumZoomScale}
+                onZoomScale={this._zoomScaleEvent || onZoomScale}
                 verticalPanEnabled={verticalPanEnabled}
                 horizontalPanEnabled={horizontalPanEnabled}
             >
                 {children}
             </RenderComponent>
+        );
+    }
+
+    zoomTo = (zoom, x, y, animate) => {
+        UIManager.dispatchViewManagerCommand(
+            findNodeHandle(this),
+            UIManager.RNPinchZoomLayout.Commands.zoomTo,
+            [zoom, x, y, animate],
         );
     }
 }

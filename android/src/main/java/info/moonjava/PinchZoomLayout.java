@@ -1,7 +1,7 @@
 package info.moonjava;
 
 import android.content.Context;
-import android.graphics.Matrix;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,50 +10,57 @@ import android.widget.FrameLayout;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
-import com.otaliastudios.zoom.ZoomApi;
-import com.otaliastudios.zoom.ZoomEngine;
-import com.otaliastudios.zoom.ZoomLayout;
-
-import org.jetbrains.annotations.NotNull;
 
 import info.moonjava.events.RNScaleChangeEvent;
 
-class PinchZoomLayout extends FrameLayout implements ZoomEngine.Listener {
-    private EventDispatcher mEventDispatcher;
-    private ZoomLayout zoomLayout;
-    private PinchZoomContent zoomLayoutContent;
 
-    public PinchZoomLayout(@NotNull Context context) {
+class PinchZoomLayout extends FrameLayout implements CustomPinchZoomLayout.OnCustomZoomListener {
+    private EventDispatcher eventDispatcher;
+    private CustomPinchZoomLayout zoomLayout;
+    private PinchZoomContent zoomLayoutContent;
+    private float _minScale = 1;
+    private float _maxScale = 3;
+    private int zoomDuration = 400;
+
+
+    public PinchZoomLayout(@NonNull Context context) {
         super(context);
         this.init(context);
     }
 
     private void init(Context context) {
-        this.mEventDispatcher = ((ReactContext) context).getNativeModule(UIManagerModule.class).getEventDispatcher();
+        this.eventDispatcher = ((ReactContext) context).getNativeModule(UIManagerModule.class).getEventDispatcher();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layoutView = inflater.inflate(R.layout.zoom_layout, this);
         zoomLayout = layoutView.findViewById(R.id.zoom_layout_container);
         this.setDefaultZoomLayoutConfig();
         if (zoomLayout != null) {
-            this.zoomLayout.getEngine().addListener(this);
+            zoomLayout.setOnCustomZoomListener(this);
+//            this.zoomLayout.getEngine().addListener(this);
             zoomLayoutContent = zoomLayout.findViewById(R.id.zoom_layout_content);
+            if (zoomLayoutContent != null) {
+                zoomLayoutContent.setOnLayoutListener(zoomLayout);
+            }
         }
 
     }
 
     private void setDefaultZoomLayoutConfig() {
         if (zoomLayout != null) {
-            Log.d(PinchZoomLayoutManager.LOG_TAG, "******Init Layout*****");
+            zoomLayout.setAllowOverScale(false);
+            zoomLayout.setMinScale(this._minScale);
+            zoomLayout.setMaxScale(this._maxScale);
+            zoomLayout.setZoomDuration(this.zoomDuration);
 //            zoomLayout.setAlignment(Alignment.CENTER);
 //            zoomLayout.setTransformation(ZoomApi.TRANSFORMATION_CENTER_INSIDE, ZoomApi.TRANSFORMATION_GRAVITY_AUTO);
-            zoomLayout.setMinZoom(1.0f, ZoomApi.TYPE_ZOOM);
-            zoomLayout.setMaxZoom(3.0f, ZoomApi.TYPE_ZOOM);
-            zoomLayout.setZoomEnabled(true);
-            zoomLayout.setFlingEnabled(true);
-            zoomLayout.setHorizontalPanEnabled(true);
-            zoomLayout.setVerticalPanEnabled(true);
-            zoomLayout.setOverPinchable(false);
-            zoomLayout.setHasClickableChildren(true);
+//            zoomLayout.setMinZoom(1.0f, ZoomApi.TYPE_ZOOM);
+//            zoomLayout.setMaxZoom(3.0f, ZoomApi.TYPE_ZOOM);
+//            zoomLayout.setZoomEnabled(true);
+//            zoomLayout.setFlingEnabled(true);
+//            zoomLayout.setHorizontalPanEnabled(true);
+//            zoomLayout.setVerticalPanEnabled(true);
+//            zoomLayout.setOverPinchable(false);
+//            zoomLayout.setHasClickableChildren(true);
         }
     }
 
@@ -62,25 +69,24 @@ class PinchZoomLayout extends FrameLayout implements ZoomEngine.Listener {
 //        return false;
 //    }
 
-    @Override
-    public void onUpdate(@NotNull ZoomEngine engine, @NotNull Matrix matrix) {
-//        super.onUpdate(engine, matrix);
-        float zoomLevel = engine.getZoom();
-        float contentWidth = engine.getContentWidth();
-        float contentHeight = engine.getContentHeight();
-        float containerWidth = engine.getContainerWidth();
-        float containerHeight = engine.getContainerHeight();
-//        Log.d(PinchZoomLayoutManager.LOG_TAG, "Pinch Zoom Scale: " + zoomLevel + " Container: " + containerWidth + "x" + containerHeight + " Content: " + contentWidth + "x" + contentHeight);
-        mEventDispatcher.dispatchEvent(new RNScaleChangeEvent(getId(), zoomLevel, containerWidth, containerHeight, contentWidth, contentHeight));
-    }
+//    @Override
+//    public void onUpdate(@NotNull ZoomEngine engine, @NotNull Matrix matrix) {
+////        super.onUpdate(engine, matrix);
+//        float zoomLevel = engine.getZoom();
+//        float containerWidth = engine.getContentWidth();
+//        float containerHeight = engine.getContentHeight();
+//        float containerWidth = engine.getContainerWidth();
+//        float containerHeight = engine.getContainerHeight();
+////        Log.d(PinchZoomLayoutManager.LOG_TAG, "Pinch Zoom Scale: " + zoomLevel + " Container: " + containerWidth + "x" + containerHeight + " Content: " + containerWidth + "x" + containerHeight);
+//        eventDispatcher.dispatchEvent(new RNScaleChangeEvent(getId(), zoomLevel, containerWidth, containerHeight, containerWidth, containerHeight));
+//    }
 
-    @Override
-    public void onIdle(@NotNull ZoomEngine zoomEngine) {
-
-    }
+//    @Override
+//    public void onIdle(@NotNull ZoomEngine zoomEngine) {
+//
+//    }
 
     View getContentChildAt(int index) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "getContentChildAt: " + index);
         if (zoomLayoutContent != null) {
             return zoomLayoutContent.getChildAt(index);
         }
@@ -88,7 +94,6 @@ class PinchZoomLayout extends FrameLayout implements ZoomEngine.Listener {
     }
 
     int getContentChildCount() {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "getContentChildCount");
         if (zoomLayoutContent != null) {
             return zoomLayoutContent.getChildCount();
         }
@@ -96,28 +101,32 @@ class PinchZoomLayout extends FrameLayout implements ZoomEngine.Listener {
     }
 
     void addChild(View child, int index) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "addChild at index: " + index);
         if (zoomLayoutContent != null) {
+//            child.setBackgroundColor(Color.BLUE);
+//            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            child.setLayoutParams(params);
+//            Log.d(PinchZoomLayoutManager.LOG_TAG, "Children size: " + child.getWidth() + "x" + child.getHeight());
             zoomLayoutContent.addView(child, index);
         }
     }
 
     void addChild(View child) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "addChild");
         if (zoomLayoutContent != null) {
+//            child.setBackgroundColor(Color.BLUE);
+//            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//            child.setLayoutParams(params);
+//            Log.d(PinchZoomLayoutManager.LOG_TAG, "Children size: " + child.getWidth() + "x" + child.getHeight());
             zoomLayoutContent.addView(child);
         }
     }
 
     void removeContentView(View view) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "removeContentView");
         if (zoomLayoutContent != null) {
             zoomLayoutContent.removeView(view);
         }
     }
 
     void removeContentViewAt(int index) {
-        Log.d(PinchZoomLayoutManager.LOG_TAG, "removeContentViewAt: " + index);
         if (zoomLayoutContent != null) {
             zoomLayoutContent.removeViewAt(index);
         }
@@ -132,38 +141,62 @@ class PinchZoomLayout extends FrameLayout implements ZoomEngine.Listener {
 
     void setMinZoom(float minZoom) {
         if (zoomLayout != null) {
-            zoomLayout.setMinZoom(minZoom, ZoomApi.TYPE_ZOOM);
+//            zoomLayout.setMinZoom(minZoom, ZoomApi.TYPE_ZOOM);
+            zoomLayout.setMinScale(minZoom);
+            this._minScale = minZoom;
         }
     }
 
     void setMaxZoom(float maxZoom) {
         if (zoomLayout != null) {
-            zoomLayout.setMaxZoom(maxZoom, ZoomApi.TYPE_ZOOM);
+//            zoomLayout.setMaxZoom(maxZoom, ZoomApi.TYPE_ZOOM);
+            zoomLayout.setMaxScale(maxZoom);
+            this._maxScale = maxZoom;
         }
     }
 
     void setZoomEnabled(boolean zoomEnabled) {
         if (zoomLayout != null) {
-            zoomLayout.setZoomEnabled(zoomEnabled);
+            zoomLayout.setAllowZoom(zoomEnabled);
+//            zoomLayout.setZoomEnabled(zoomEnabled);
         }
     }
 
     void setPanEnabled(boolean panEnabled) {
         if (zoomLayout != null) {
-            zoomLayout.setHorizontalPanEnabled(panEnabled);
-            zoomLayout.setVerticalPanEnabled(panEnabled);
+//            zoomLayout.setHorizontalPanEnabled(panEnabled);
+//            zoomLayout.setVerticalPanEnabled(panEnabled);
         }
     }
 
     void setHorizontalPanEnabled(boolean horizontalPanEnabled) {
         if (zoomLayout != null) {
-            zoomLayout.setHorizontalPanEnabled(horizontalPanEnabled);
+//            zoomLayout.setHorizontalPanEnabled(horizontalPanEnabled);
         }
     }
 
     void setVerticalPanEnabled(boolean verticalPanEnabled) {
         if (zoomLayout != null) {
-            zoomLayout.setVerticalPanEnabled(verticalPanEnabled);
+//            zoomLayout.setVerticalPanEnabled(verticalPanEnabled);
         }
+    }
+
+    void zoomTo(double zoom, double x, double y, boolean animated) {
+        if (zoomLayout != null) {
+            zoomLayout.setScale((float) zoom, (float) x, (float) y, animated);
+        }
+    }
+
+    void setZoomDuration(int zoomDuration) {
+        this.zoomDuration = zoomDuration;
+        if (zoomLayout != null) {
+            zoomLayout.setZoomDuration(this.zoomDuration);
+        }
+    }
+
+    @Override
+    public void onZoom(float zoom, float containerWidth, float containerHeight, float contentWidth, float contentHeight) {
+        Log.d(PinchZoomLayoutManager.LOG_TAG, "On Zoom: " + zoom + " containerWidth: " + containerWidth + " containerHeight: " + containerHeight + " contentWidth: " + contentWidth + " contentHeight: " + contentHeight);
+        eventDispatcher.dispatchEvent(new RNScaleChangeEvent(getId(), zoom, containerWidth, containerHeight, contentWidth, contentHeight));
     }
 }

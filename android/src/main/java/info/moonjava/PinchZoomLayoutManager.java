@@ -3,15 +3,17 @@ package info.moonjava;
 import android.view.View;
 
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
+import com.facebook.react.uimanager.PixelUtil;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.annotations.ReactProp;
-import com.otaliastudios.zoom.ZoomApi;
 
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import info.moonjava.events.RNScaleChangeEvent;
@@ -19,6 +21,7 @@ import info.moonjava.events.RNScaleChangeEvent;
 class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
     private static final String REACT_CLASS = "RNPinchZoomLayout";
     public static final String LOG_TAG = "RNPinchZoomLayout";
+    private static final int COMMAND_ZOOM_TO = 1;
 
     PinchZoomLayoutManager(ReactContext reactContext) {
 
@@ -67,6 +70,43 @@ class PinchZoomLayoutManager extends ViewGroupManager<PinchZoomLayout> {
     @ReactProp(name = "useAnimatedEvents", defaultBoolean = false)
     public void setUseAnimatedEvents(PinchZoomLayout view, boolean useAnimatedEvents) {
 
+    }
+
+    @ReactProp(name = "zoomDuration", defaultInt = 400)
+    public void setZoomDuration(PinchZoomLayout view, int zoomDuration) {
+        view.setZoomDuration(zoomDuration);
+    }
+
+    @Override
+    public Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of(
+                "zoomTo", COMMAND_ZOOM_TO
+        );
+    }
+
+    @Override
+    public void receiveCommand(@Nonnull PinchZoomLayout pinchZoomView, int commandId, @Nullable ReadableArray args) {
+        switch (commandId) {
+            case COMMAND_ZOOM_TO: {
+                try {
+                    double zoom = args.getDouble(0);
+                    double x = args.getDouble(1);
+                    x = PixelUtil.toPixelFromDIP(x);
+                    double y = args.getDouble(2);
+                    y = PixelUtil.toPixelFromDIP(y);
+                    boolean animated = args.getBoolean(3);
+                    pinchZoomView.zoomTo(zoom, x, y, animated);
+                } catch (Throwable e) {
+
+                }
+                return;
+            }
+            default:
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported command %d received by %s.",
+                        commandId,
+                        getClass().getSimpleName()));
+        }
     }
 
     @Override

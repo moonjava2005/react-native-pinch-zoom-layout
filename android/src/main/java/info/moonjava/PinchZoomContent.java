@@ -1,14 +1,17 @@
 package info.moonjava;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 class PinchZoomContent extends FrameLayout {
+    private OnLayoutListener onLayoutListener;
+
     public PinchZoomContent(@NonNull Context context) {
         super(context);
     }
@@ -21,11 +24,16 @@ class PinchZoomContent extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (this.onLayoutListener != null) {
+            this.onLayoutListener.onLayout((right - left), (bottom - top));
+        }
+    }
+
+    //    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-        int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
         View childView;
         if (getChildCount() > 0) {
             childView = getChildAt(0);
@@ -33,17 +41,25 @@ class PinchZoomContent extends FrameLayout {
                 int childWidth = childView.getWidth();
                 int childHeight = childView.getHeight();
                 if (childWidth > 0) {
-                    if (widthMode == View.MeasureSpec.UNSPECIFIED) {
-                        widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
-                    }
+                    widthMeasureSpec = MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY);
                 }
                 if (childHeight > 0) {
-                    if (heightMode == View.MeasureSpec.UNSPECIFIED) {
-                        heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
-                    }
+                    heightMeasureSpec = MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY);
                 }
             }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    public void setOnLayoutListener(OnLayoutListener onLayoutListener) {
+        this.onLayoutListener = onLayoutListener;
+    }
+
+    public OnLayoutListener getOnLayoutListener() {
+        return onLayoutListener;
+    }
+
+    interface OnLayoutListener {
+        void onLayout(int width, int height);
     }
 }

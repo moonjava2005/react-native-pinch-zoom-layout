@@ -22,6 +22,7 @@ export default class PinchZoomLayout extends PureComponent {
 
 
     scrollViewRef = React.createRef();
+    pinchZoomRef = React.createRef();
     singleTapRef = React.createRef();
     doubleTapRef = React.createRef();
     _currentScale = 0;
@@ -86,7 +87,8 @@ export default class PinchZoomLayout extends PureComponent {
         }
         return (
             <AndroidPinchZoomLayout
-                style={style}
+                style={[style, styles.container]}
+                ref={this.pinchZoomRef}
                 onZoomScale={this.onZoomScale}
                 verticalPanEnabled={verticalPanEnabled}
                 horizontalPanEnabled={horizontalPanEnabled}
@@ -157,7 +159,9 @@ export default class PinchZoomLayout extends PureComponent {
                         }
                     }
                 } else {
-
+                    if (this.pinchZoomRef.current) {
+                        this.pinchZoomRef.current.zoomTo(nextScale, absoluteX, absoluteY, true);
+                    }
                 }
             }
         }
@@ -263,7 +267,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     container: {
-        flex: 1,
         alignItems: 'stretch',
         justifyContent: 'center'
     }
