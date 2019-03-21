@@ -36,7 +36,11 @@ No action required
   	```
 
 ## Dependencies
-`react-native-pinch-zoom-layout` uses [react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler)! Link it before using
+Install and link [react-native-gesture-handler](https://github.com/kmagiera/react-native-gesture-handler). To install and link it, run:
+```
+yarn add react-native-gesture-handler
+react-native link react-native-gesture-handler
+```
 
 ## Usage
 ```javascript

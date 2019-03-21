@@ -1,6 +1,6 @@
 {
   "name": "react-native-pinch-zoom-layout",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Pinch to zoom and pan content view",
   "main": "index.js",
   "scripts": {
@@ -29,10 +29,8 @@
     "type": "git",
     "url": "git://github.com/moonjava2005/react-native-pinch-zoom-layout.git"
   },
-  "dependencies": {
-    "react-native-gesture-handler": "^1.1.0"
-  },
   "peerDependencies": {
-    "react-native": ">=0.50.0"
+    "react-native": ">=0.50.0",
+    "react-native-gesture-handler": "^1.1.0"
   }
 }

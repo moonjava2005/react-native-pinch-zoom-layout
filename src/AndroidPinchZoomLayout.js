@@ -117,14 +117,14 @@ export default class AndroidPinchZoomLayout extends PureComponent {
     zoomTo = (zoom, x, y, animate) => {
         UIManager.dispatchViewManagerCommand(
             findNodeHandle(this),
-            UIManager.RNPinchZoomLayout.Commands.zoomTo,
+            UIManager.getViewManagerConfig('RNPinchZoomLayout').Commands.zoomTo,
             [zoom, x, y, animate],
         );
     };
     zoom = (zoom, animate) => {
         UIManager.dispatchViewManagerCommand(
             findNodeHandle(this),
-            UIManager.RNPinchZoomLayout.Commands.zoom,
+            UIManager.getViewManagerConfig('RNPinchZoomLayout').Commands.zoom,
             [zoom, animate],
         );
     }
