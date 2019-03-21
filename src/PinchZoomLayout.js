@@ -6,6 +6,7 @@ import AndroidPinchZoomLayout from './AndroidPinchZoomLayout';
 
 export default class PinchZoomLayout extends PureComponent {
     static propTypes = {
+        zoomDuration: PropTypes.number,
         minimumZoomScale: PropTypes.number,
         maximumZoomScale: PropTypes.number,
         enabled: PropTypes.bool,
@@ -43,6 +44,7 @@ export default class PinchZoomLayout extends PureComponent {
         const {
             style,
             children,
+            zoomDuration,
             minimumZoomScale,
             maximumZoomScale
         } = this.props;
@@ -89,6 +91,9 @@ export default class PinchZoomLayout extends PureComponent {
             <AndroidPinchZoomLayout
                 style={[style, styles.container]}
                 ref={this.pinchZoomRef}
+                zoomDuration={zoomDuration}
+                minimumZoomScale={minimumZoomScale}
+                maximumZoomScale={maximumZoomScale}
                 onZoomScale={this.onZoomScale}
                 verticalPanEnabled={verticalPanEnabled}
                 horizontalPanEnabled={horizontalPanEnabled}
@@ -256,6 +261,23 @@ export default class PinchZoomLayout extends PureComponent {
                 contentWidth: contentWidth,
                 contentHeight: contentHeight,
             });
+        }
+    };
+    zoom = ({zoomScale, animated}) => {
+        if (Platform.OS === 'ios') {
+            const nextWidth = this._contentWidth / zoomScale;
+            const nextHeight = this._contentHeight / zoomScale;
+            if (this.scrollViewRef.current) {
+                this.scrollViewRef.current.getScrollResponder().scrollResponderZoomTo({
+                    width: nextWidth,
+                    height: nextHeight,
+                    animated: animated
+                });
+            }
+        } else {
+            if (this.pinchZoomRef.current) {
+                this.pinchZoomRef.current.zoom(zoomScale, true);
+            }
         }
     }
 }

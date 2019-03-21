@@ -19,6 +19,7 @@ class PurePinchZoomLayout extends PureComponent {
             verticalPanEnabled,
             horizontalPanEnabled,
             onZoomScale,
+            zoomDuration,
         } = this.props;
         return (
             <RNPinchZoomLayout
@@ -28,6 +29,7 @@ class PurePinchZoomLayout extends PureComponent {
                 horizontalPanEnabled={horizontalPanEnabled}
                 useScaleAnimatedEvents={!!onZoomScale}
                 onZoomScale={onZoomScale}
+                zoomDuration={zoomDuration}
                 children={children}
             />
         );
@@ -44,6 +46,7 @@ export default class AndroidPinchZoomLayout extends PureComponent {
         enable: PropTypes.bool,
         verticalPanEnabled: PropTypes.bool,
         horizontalPanEnabled: PropTypes.bool,
+        zoomDuration: PropTypes.number,
         minimumZoomScale: PropTypes.number,
         maximumZoomScale: PropTypes.number,
         onZoomScale: PropTypes.func,
@@ -53,6 +56,7 @@ export default class AndroidPinchZoomLayout extends PureComponent {
         enable: true,
         verticalPanEnabled: true,
         horizontalPanEnabled: true,
+        zoomDuration: 400,
         minimumZoomScale: 1,
         maximumZoomScale: 3
     };
@@ -85,6 +89,7 @@ export default class AndroidPinchZoomLayout extends PureComponent {
             style,
             children,
             enable,
+            zoomDuration,
             minimumZoomScale,
             maximumZoomScale,
             verticalPanEnabled,
@@ -97,6 +102,7 @@ export default class AndroidPinchZoomLayout extends PureComponent {
             <RenderComponent
                 style={style}
                 enable={enable}
+                zoomDuration={zoomDuration}
                 minimumZoomScale={minimumZoomScale}
                 maximumZoomScale={maximumZoomScale}
                 onZoomScale={this._zoomScaleEvent || onZoomScale}
@@ -113,6 +119,13 @@ export default class AndroidPinchZoomLayout extends PureComponent {
             findNodeHandle(this),
             UIManager.RNPinchZoomLayout.Commands.zoomTo,
             [zoom, x, y, animate],
+        );
+    };
+    zoom = (zoom, animate) => {
+        UIManager.dispatchViewManagerCommand(
+            findNodeHandle(this),
+            UIManager.RNPinchZoomLayout.Commands.zoom,
+            [zoom, animate],
         );
     }
 }

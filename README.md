@@ -47,10 +47,13 @@ import {
 } from 'react-native';
 
 export default class ImageViewer extends Component {
+    pinZoomLayoutRef=React.createRef();
     render() {
        return(<PinchZoomLayout
-                          style={Device.isIos ? FULL_FLEX : FULL_FLEX_CENTER_ALL}
+                          style={{flex:1}}
+                          ref={this.pinZoomLayoutRef}
                           onZoom={this.onZoom}
+                          onTap={this.onTap}
                       >
                           <Image
                                 style={{width:56,height:56}}
@@ -60,6 +63,7 @@ export default class ImageViewer extends Component {
                           />
                       </PinchZoomLayout>)
     }
+    
     onZoom=event=>{
         const {
             containerWidth,
@@ -69,12 +73,17 @@ export default class ImageViewer extends Component {
             zoomScale
         }=event;
     }
+    
+    onTap=()=>{
+        
+    }
 }
 ```
 
 ### Configurable props
 * [enabled](#enabled)
 * [panEnabled](#panEnabled)
+* [zoomDuration](#zoomDuration)
 * [minimumZoomScale](#minimumZoomScale)
 * [maximumZoomScale](#maximumZoomScale)
 
@@ -98,6 +107,11 @@ Indicates whether the layout can pan when the zoomed content is bigger than the 
 * **true (default)** - Allow pan
 * **false** - Disable pan
 
+#### zoomDuration
+Animation duration of zoom.
+* **default** - 400
+Platforms: Android
+
 #### minimumZoomScale
 The minimum zoom level.
 * **default** - 1
@@ -105,3 +119,30 @@ The minimum zoom level.
 #### maximumZoomScale
 The maximum zoom level.
 * **default** - 3
+
+#### onZoom
+Callback function that is called when the view is zoomed. The event params is
+
+```
+const { 
+  containerWidth,
+  containerHeight,
+  contentWidth,
+  contentHeight,
+  zoomScale
+} = event;
+```
+
+#### onTap
+Callback function that is called when the view is taped
+
+#### zoom()
+`zoom({zoomScale, animated})`
+
+Zoom the content view to specific value.
+
+
+Example:
+```
+this.pinZoomLayoutRef.current.zoom({zoomScale:2.5, animated:true}); // Zoom content view to 2.5 with animation
+```
